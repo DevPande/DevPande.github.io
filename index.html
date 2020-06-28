@@ -87,10 +87,10 @@ function add(a, b , callback){
 	 }
 	 var dataSetCumulative =[]
 	 for(x in dictNew){
-		 dataSetCumulative.push({y:dictNew[x], label:x})
+		 dataSetCumulative.push({y:dictNew[x], label:x, color:"#33CCFF"})
 	 }
 	 sortByMonth(dataSetCumulative)
-	 dataSetCumulative.push({ label: "Final", isCumulativeSum: true, indexLabel: "{y}" })
+	 dataSetCumulative.push({ label: "Final", isCumulativeSum: true, indexLabel: "{y}", color:"#33CCFF" })
 
 	
 	sortByMonth(dataSetNew)
@@ -226,6 +226,7 @@ weeklyChart.render();
 var cumulativeChart = new CanvasJS.Chart("chartContainer4", {
 	theme: "light2", // "light1", "light2", "dark1", "dark2"
 	animationEnabled: true,
+	dataPointWidth: 20,
 	title:{
 		
 	},
@@ -242,7 +243,7 @@ var cumulativeChart = new CanvasJS.Chart("chartContainer4", {
 	},
 	data: [{
 		type: "waterfall",
-		name: "Seller 1",
+		name: "App Downloads",
 		showInLegend: true,
 		indexLabelOrientation: "vertical",
 		indexLabelFontColor: "black",
@@ -330,7 +331,7 @@ window.onload = function () {
 	<div id="chartContainer3" style="height: 370px;"></div><br/>
 	<br/>
 	<h4 style="text-align:center" class="card-title m-b-2">
-		<span id="visitors-chart-heading">Cumulative Mobile App Downloads </span>
+		<span id="visitors-chart-heading">Cumulative App Downloads </span>
 	</h4>
 	<div id="chartContainer4" style="height: 370px;"></div>
 	
