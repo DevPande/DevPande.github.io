@@ -6,7 +6,7 @@ body {
 }
 
 #header {
-  background-color: #34495e;
+  background-color: #8FD1EC;
   height: 64px;
   margin-bottom: 0;
   padding: 0;
@@ -19,6 +19,7 @@ body {
 
 #header .navbar-header {
   margin: 0;
+  
 }
 
 #header #sidebar-toggle-button {
