@@ -13,6 +13,7 @@
 	<link href="assets/bootstrap/bootstrap4-alpha3.min.css" rel="stylesheet">
 	<link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 	<link href="assets/web-analytics/style.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
 	<!-- scripts -->
 	<script src="assets/jquery/jquery-3.1.0.min.js"></script>
@@ -245,6 +246,7 @@ var cumulativeChart = new CanvasJS.Chart("chartContainer4", {
 		type: "waterfall",
 		name: "App Downloads",
 		showInLegend: true,
+		legendMarkerColor: "#33CCFF",
 		indexLabelOrientation: "vertical",
 		indexLabelFontColor: "black",
 		dataPoints: dataSetCumulative
@@ -275,24 +277,25 @@ window.onload = function () {
 </script>
 </head>
 <body>
-	<!-- header -->
-	<nav class="navbar navbar-fixed-top" id="header">
-		<div class="container-fluid">
-			<div class="navbar-header">
-			<img src="fretbox.png" alt="FretBox logo" style="padding-left: 10px; padding-bottom: 20px;">
-				<div id="sidebar-toggle-button">
-					
-				</div>
-				<div class="brand">
-					<a href="web-analytics-overview.html">
-						<span class="hidden-xs-down m-r-3">Report (Jan-June 2020) </span><span class="lead"></span>
-					</a>
-				</div>
+	<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+    <a href="#home" class="w3-bar-item w3-button">
+    <!-- Float links to the right. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+      <a href="#projects" class="w3-bar-item w3-button">Projects</a>
+      <a href="https://fretbox.in" target="_blank" class="w3-bar-item w3-button">About</a>
+      <a href="#contact" class="w3-bar-item w3-button">Contact</a>
+    </div>
+  </div>
+</div>
 
-			</div>
-		</div>
-	</nav>
-	<!-- /header -->
+	<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+		<img src="fretbox.png" alt="FretBox logo" style="padding-left: 10px; padding-bottom: 20px;">
+  		<div class="w3-display-middle w3-margin-top w3-center">
+    		<h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min">Report (Jan-June 2020)</span> <span class="w3-hide-small w3-text-light-grey"></span></h1>
+ 		 </div>
+	</header>
 
 	<!-- sidebar -->
 	<div class="sidebar-toggle" id="sidebar">
