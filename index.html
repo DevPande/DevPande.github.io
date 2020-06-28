@@ -69,6 +69,8 @@ function add(a, b , callback){
 		 dictNew[dataSet[i]['label']] += Number(dataSet[i]['y'])
 	 }
 	 console.log("DictNew: ", dictNew)
+
+
 	 var dataSetNew = [];
 	 for(x in dictNew){
 		 if(x=="March")
@@ -83,19 +85,28 @@ function add(a, b , callback){
 			dataSetNew.push({y:dictNew[x], label:x})
 
 	 }
+	 var dataSetCumulative =[]
+	 for(x in dictNew){
+		 dataSetCumulative.push({y:dictNew[x], label:x})
+	 }
+	 sortByMonth(dataSetCumulative)
+	 dataSetCumulative.push({ label: "Final", isCumulativeSum: true, indexLabel: "{y}" })
 
+	
 	sortByMonth(dataSetNew)
 	for (key in weekWiseNew){
 		sortByMonth(weekWiseNew[key])
 	}
 	console.log("After New Week Wise sort", weekWiseNew)
-	callback(dataSetNew); 
+
+	console.log("DataSet Cumulative", dataSetCumulative)
+	callback(dataSetNew, dataSetCumulative); 
    });
    } 
      
-  function disp(dataSetNew){ 
+  function disp(dataSetNew, dataSetCumulative){ 
    console.log('This must be printed after addition', dataSetNew);
-   printChart(dataSetNew)
+   printChart(dataSetNew, dataSetCumulative)
    }   
 
    function sortByMonth(arr) {
@@ -107,7 +118,7 @@ function add(a, b , callback){
   });
 } 
 
-   function printChart(dataSet){
+   function printChart(dataSet, dataSetCumulative){
 	   console.log("Data set in printchart", dataSet)
 	   var chart = new CanvasJS.Chart("chartContainer1", {
 	animationEnabled: true,
@@ -212,6 +223,35 @@ var weeklyChart = new CanvasJS.Chart("chartContainer3", {
 
 weeklyChart.render();
 
+var cumulativeChart = new CanvasJS.Chart("chartContainer4", {
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	animationEnabled: true,
+	title:{
+		
+	},
+	axisX: {
+		interval: 1
+	},
+	axisY: {
+	},
+	toolTip: {
+		shared: true
+	},
+	legend: {
+		cursor: "pointer",
+	},
+	data: [{
+		type: "waterfall",
+		name: "Seller 1",
+		showInLegend: true,
+		indexLabelOrientation: "vertical",
+		indexLabelFontColor: "black",
+		dataPoints: dataSetCumulative
+		}]
+	
+});
+cumulativeChart.render();
+
 }
 
 function getWeek(day){
@@ -287,7 +327,12 @@ window.onload = function () {
 	<h4 style="text-align:center" class="card-title m-b-2">
 		<span id="visitors-chart-heading">Weekly Mobile App Downloads </span>
 	</h4>
-	<div id="chartContainer3" style="height: 370px;"></div>
+	<div id="chartContainer3" style="height: 370px;"></div><br/>
+	<br/>
+	<h4 style="text-align:center" class="card-title m-b-2">
+		<span id="visitors-chart-heading">Cumulative Mobile App Downloads </span>
+	</h4>
+	<div id="chartContainer4" style="height: 370px;"></div>
 	
 
 
