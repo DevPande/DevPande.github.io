@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Fetch from API</title>
+        <title>Web Analytics - Overview</title>
         <!-- stylesheets -->
 	    <link href="assets/fonts/font-roboto.css" rel="stylesheet">
         <link href="assets/bootstrap/bootstrap4-alpha3.min.css" rel="stylesheet">
@@ -14,10 +14,11 @@
 	    <script src="assets/tether/tether.min.js"></script>
 	    <script src="assets/bootstrap/bootstrap4-alpha3.min.js"></script>
 	    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        <script type="text/javascript" src="app_download_data.json"></script>
     </head>
     <body>
         <script>
-
+        
             function sortByMonth(arr){
                 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                 arr.sort(function(a, b){
@@ -36,26 +37,28 @@
 	            else if(day>=22 && day<=31)
 		            return 4;
                 }
+             
 
 
             async function getAPIData(){
                 const api_url = 'https://www.fretbox.in/handler/fretbox_society_report.php?report=APP_DOWNLOAD_DATE_REPORT'
+                const file_name = 'app_download_data.json'
                 const response = await fetch(api_url);
                 const fetchedData = await response.json();
                 const data = fetchedData['data'];
 
-                var dateToMonth = {"01":"January", "02":"February", "03":"March", "04":"April","05":"May","06":"June", "07":"July","08":"August","09":"September","10":"October","11":"November","12":"December"}
-                var monthsList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                 
-                var monthWiseList = [];
-                for(key in data){
-                    var dict={};
-                    dict['label'] = dateToMonth[data[key]['created_at'].substr(5,2)]
-                    dict['y'] = Number(data[key]['new_downloads'])
-                    dict['week'] = getWeekNumber(Number(data[key]['created_at'].substr(8,2)))
-                    monthWiseList.push(dict);
-                }
-
+                var monthsList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                var dateToMonth = {"01":"January", "02":"February", "03":"March", "04":"April","05":"May","06":"June", "07":"July","08":"August","09":"September","10":"October","11":"November","12":"December"}
+                var monthWiseList = []
+                    for(key in data){
+                        var dict={};
+                        dict['label'] = dateToMonth[data[key]['created_at'].substr(5,2)]
+                        dict['y'] = Number(data[key]['new_downloads'])
+                        dict['week'] = getWeekNumber(Number(data[key]['created_at'].substr(8,2)))
+                        monthWiseList.push(dict);
+                    }
+                
                 var monthWiseDict = {}
                 for(var i=0; i<monthWiseList.length; i++){
 		            monthWiseDict[monthWiseList[i]['label']]=0
@@ -63,6 +66,7 @@
 	            for(var i=0; i<monthWiseList.length; i++){
 		           monthWiseDict[monthWiseList[i]['label']] += Number(monthWiseList[i]['y'])
 	            }
+                 
 
                 var monthWiseFormat = [];
                 for(x in monthWiseDict){
@@ -78,6 +82,7 @@
 			            monthWiseFormat.push({y:monthWiseDict[x], label:x})
                 }
                 sortByMonth(monthWiseFormat)
+                
                 
                 weekWiseDict = {};
                 for(var i=1; i<=4; i++){

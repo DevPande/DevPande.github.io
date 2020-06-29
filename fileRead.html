@@ -1,0 +1,350 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Web Analytics - Overview</title>
+
+	<!-- stylesheets -->
+	<link href="assets/fonts/font-roboto.css" rel="stylesheet">
+	<link href="assets/bootstrap/bootstrap4-alpha3.min.css" rel="stylesheet">
+	<link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<link href="assets/web-analytics/style.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+	<!-- scripts -->
+	<script src="assets/jquery/jquery-3.1.0.min.js"></script>
+	<script src="assets/tether/tether.min.js"></script>
+	<script src="assets/bootstrap/bootstrap4-alpha3.min.js"></script>
+	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	
+
+<script>
+
+
+function add(a, b , callback){ 
+   var dataSet= []
+   var months = {"01":"January", "02":"February", "03":"March", "04":"April","05":"May","06":"June", "07":"July","08":"August","09":"September","10":"October","11":"November","12":"December"}
+
+   $.getJSON('app_download_data.json', function(data) {
+       $.each(data.data, function(i, f) {
+		var dict = {}
+		dict['label'] = months[f.created_at.substr(5,2)]
+		dict['y'] = Number(f.new_downloads);
+		dict['week'] = getWeek(Number(f.created_at.substr(8,2)))
+		dataSet.push(dict)
+     });
+	 console.log("**************",dataSet[0]) 
+	 weekWise={1:{"January":0, "February":0, "March":0, "April":0, "May":0, "June":0, "July":0, "August":0, "September":0, "October":0, "November":0, "December":0}, 
+	 2:{"January":0, "February":0, "March":0, "April":0, "May":0, "June":0, "July":0, "August":0, "September":0, "October":0, "November":0, "December":0}, 
+	 3:{"January":0, "February":0, "March":0, "April":0, "May":0, "June":0, "July":0, "August":0, "September":0, "October":0, "November":0, "December":0},
+	 4:{"January":0, "February":0, "March":0, "April":0, "May":0, "June":0, "July":0, "August":0, "September":0, "October":0, "November":0, "December":0}}
+
+	for(i=0; i<dataSet.length; i++){
+		weekWise[dataSet[i]['week']][dataSet[i]['label']]=0;
+	}
+	for(i=0; i<dataSet.length; i++){
+		weekWise[dataSet[i]['week']][dataSet[i]['label']]+=dataSet[i]['y'];
+	}
+	console.log("weekWise", weekWise)
+
+	weekWiseNew={}
+	for (key in weekWise){
+		l=[]
+		for (month in weekWise[key]){
+			dict={}
+			dict['label']=month
+			dict['y']=weekWise[key][month]
+			l.push(dict)
+		}
+		weekWiseNew[key]=l
+	}
+
+	console.log("WeekWise New", weekWiseNew)
+
+	 console.log("dataSet: ", dataSet)
+	 var dictNew={};
+	 var i;
+	 for(i=0; i<dataSet.length; i++){
+		 dictNew[dataSet[i]['label']]=0
+	 }
+	 for(i=0; i<dataSet.length; i++){
+		 dictNew[dataSet[i]['label']] += Number(dataSet[i]['y'])
+	 }
+	 console.log("DictNew: ", dictNew)
+
+
+	 var dataSetNew = [];
+	 for(x in dictNew){
+		 if(x=="March")
+		 	dataSetNew.push({y:dictNew[x], label:x, indexLabel: "\u2605 LOCKDOWN 1.0"})
+		else if(x=="April")
+			dataSetNew.push({y:dictNew[x], label:x, indexLabel: "\u2605 LOCKDOWN 2.0"})
+		else if(x=="May")
+			dataSetNew.push({y:dictNew[x], label:x, indexLabel: "\u2605 LOCKDOWN 3.0"})
+		else if(x=="June")
+			dataSetNew.push({y:dictNew[x], label:x, indexLabel: "\u2605 UNLOCK 1.0"})
+		else 
+			dataSetNew.push({y:dictNew[x], label:x})
+
+	 }
+	 var dataSetCumulative =[]
+	 for(x in dictNew){
+		 dataSetCumulative.push({y:dictNew[x], label:x, color:"#33CCFF"})
+	 }
+	 sortByMonth(dataSetCumulative)
+	 dataSetCumulative.push({ label: "Final", isCumulativeSum: true, indexLabel: "{y}", color:"#33CCFF" })
+
+	
+	sortByMonth(dataSetNew)
+	for (key in weekWiseNew){
+		sortByMonth(weekWiseNew[key])
+	}
+	console.log("After New Week Wise sort", weekWiseNew)
+
+	console.log("DataSet Cumulative", dataSetCumulative)
+	callback(dataSetNew, dataSetCumulative); 
+   });
+   } 
+     
+  function disp(dataSetNew, dataSetCumulative){ 
+   console.log('This must be printed after addition', dataSetNew);
+   printChart(dataSetNew, dataSetCumulative)
+   }   
+
+   function sortByMonth(arr) {
+  var months = ["January", "February", "March", "April", "May", "June",
+  	        "July", "August", "September", "October", "November", "December"];
+  arr.sort(function(a, b){
+      return months.indexOf(a.label)
+           - months.indexOf(b.label);
+  });
+} 
+
+   function printChart(dataSet, dataSetCumulative){
+	   console.log("Data set in printchart", dataSet)
+	   var chart = new CanvasJS.Chart("chartContainer1", {
+	animationEnabled: true,
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	title:{
+		
+	},
+	axisY: {
+		title: "Mobile App Downloads"
+	},
+	axisX: {
+		title: "Month"
+	},
+	data: [{        
+		type: "column",  
+		showInLegend: true, 
+		legendMarkerColor: "grey",
+		dataPoints: dataSet
+		}]
+	});
+	chart.render();	
+
+
+var weeklyChart = new CanvasJS.Chart("chartContainer3", {            
+      title:{
+        text: ""              
+      },
+	  dataPointWidth: 25,
+
+      data: [  //array of dataSeries     
+      { //dataSeries - first quarter
+ /*** Change type "column" to "bar", "area", "line" or "pie"***/        
+       type: "column",
+       name: "First Week",
+       showInLegend: true,
+       dataPoints: weekWiseNew[1]
+     },
+
+     { //dataSeries - second quarter
+
+      type: "column",
+      name: "Second Week", 
+      showInLegend: true,               
+      dataPoints: weekWiseNew[2]
+    },
+
+	{ //dataSeries - third week
+
+      type: "column",
+      name: "Third Week", 
+      showInLegend: true,               
+      dataPoints: weekWiseNew[3]
+    },
+
+	{ //dataSeries - fourth week
+
+      type: "column",
+      name: "Fourth Week", 
+      showInLegend: true,               
+      dataPoints: weekWiseNew[4]
+    }
+    ],
+ /** Set axisY properties here*/
+    axisY:{
+      prefix: "",
+      suffix: "",
+      includeZero: false
+    },
+
+	axisX: {
+		scaleBreaks: {
+			type: "straight",
+			fillOpacity: 1,
+			customBreaks: [{ 
+				startValue: 50, 
+				endValue: 100 
+			}]
+		}
+	},
+
+  });
+
+weeklyChart.render();
+
+/* var pieChart = new CanvasJS.Chart("chartContainer2", {
+	animationEnabled: true,
+	title: {
+		text: "Desktop Search Engine Market Share - 2016"
+	},
+	data: [{
+		type: "pie",
+		startAngle: 240,
+		yValueFormatString: "##0.00\"%\"",
+		indexLabel: "{label} {y}",
+		dataPoints: [
+			{y: 79.45, label: "Google"},
+			{y: 7.31, label: "Bing"},
+			{y: 7.06, label: "Baidu"},
+			{y: 4.91, label: "Yahoo"},
+			{y: 1.26, label: "Others"}
+		]
+	}]
+});
+pieChart.render(); */
+
+
+var cumulativeChart = new CanvasJS.Chart("chartContainer4", {
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	animationEnabled: true,
+	dataPointWidth: 20,
+	title:{
+		
+	},
+	axisX: {
+		interval: 1
+	},
+	axisY: {
+	},
+	toolTip: {
+		shared: true
+	},
+	legend: {
+		cursor: "pointer",
+	},
+	data: [{
+		type: "waterfall",
+		name: "App Downloads",
+		showInLegend: true,
+		legendMarkerColor: "#33CCFF",
+		indexLabelOrientation: "vertical",
+		indexLabelFontColor: "black",
+		dataPoints: dataSetCumulative
+		}]
+	
+});
+cumulativeChart.render();
+
+}
+
+function getWeek(day){
+	if(day>=1 && day<=7)
+		return 1;
+	else if(day>=8 && day<=14)
+		return 2;
+	else if(day>=15 && day<=21)
+		return 3;
+	else if(day>=22 && day<=31)
+		return 4;
+	
+}
+
+
+window.onload = function () {
+	add(5,6,disp);    
+
+}
+</script>
+</head>
+<body>
+	<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+   
+    <a href="#home" class="w3-bar-item w3-button">
+    <!-- Float links to the right. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+      <a href="https://fretbox.in" target="_blank" class="w3-bar-item w3-button">About</a>
+    </div>
+  </div>
+</div>
+
+	<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+		<img src="fretbox.png" alt="FretBox logo" style="padding-left: 10px; padding-bottom: 20px;">
+  		<div class="w3-display-middle w3-margin-top w3-center">
+    		<h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min">Report (Jan-June 2020)</span> <span class="w3-hide-small w3-text-light-grey"></span></h1>
+ 		 </div>
+	</header>
+
+	<!-- sidebar -->
+	<div class="sidebar-toggle" id="sidebar">
+		<ul class="nav nav-sidebar">
+			<li>
+				<a href="web-analytics-real-time.html">
+					<i class="fa fa-clock-o fa-lg fa-fw" aria-hidden="true"></i>
+					<span>Real Time</span>
+				</a>
+			</li>
+			<li role="separator" class="divider"></li>
+			<li>
+				<a href="web-analytics-overview.html" class="active">
+					<i class="fa fa-newspaper-o fa-lg fa-fw" aria-hidden="true"></i>
+				</a>
+			</li>
+			<li role="separator" class="divider"></li>
+		</ul>
+	</div><br/>
+	<br/>
+	<!-- /sidebar -->
+	
+	<h4 style="text-align:center" class="card-title m-b-2">
+		<span id="visitors-chart-heading">Monthly Mobile App Downloads </span>
+	</h4>
+	<div id="chartContainer1" style="height: 370px;"></div><br/>
+	<br/>
+	<h4 style="text-align:center" class="card-title m-b-2">
+		<span id="visitors-chart-heading">Weekly Mobile App Downloads </span>
+	</h4>
+	<div id="chartContainer3" style="height: 370px;"></div><br/>
+	<br/>
+	<h4 style="text-align:center" class="card-title m-b-2">
+		<span id="visitors-chart-heading">Cumulative App Downloads </span>
+	</h4>
+	<div id="chartContainer4" style="height: 370px;"></div>
+	<br/>
+	<!--<h4 style="text-align:center" class="card-title m-b-2">
+		<span id="visitors-chart-heading">Area Wise Downloads </span>
+	</h4>
+	<div id="chartContainer2" style="height: 370px;"></div> -->
+	
+
+
+</body>
+</html>
