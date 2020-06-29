@@ -208,6 +208,28 @@ var weeklyChart = new CanvasJS.Chart("chartContainer3", {
 
 weeklyChart.render();
 
+/* var pieChart = new CanvasJS.Chart("chartContainer2", {
+	animationEnabled: true,
+	title: {
+		text: "Desktop Search Engine Market Share - 2016"
+	},
+	data: [{
+		type: "pie",
+		startAngle: 240,
+		yValueFormatString: "##0.00\"%\"",
+		indexLabel: "{label} {y}",
+		dataPoints: [
+			{y: 79.45, label: "Google"},
+			{y: 7.31, label: "Bing"},
+			{y: 7.06, label: "Baidu"},
+			{y: 4.91, label: "Yahoo"},
+			{y: 1.26, label: "Others"}
+		]
+	}]
+});
+pieChart.render(); */
+
+
 var cumulativeChart = new CanvasJS.Chart("chartContainer4", {
 	theme: "light2", // "light1", "light2", "dark1", "dark2"
 	animationEnabled: true,
@@ -315,6 +337,11 @@ window.onload = function () {
 		<span id="visitors-chart-heading">Cumulative App Downloads </span>
 	</h4>
 	<div id="chartContainer4" style="height: 370px;"></div>
+	<br/>
+	<!--<h4 style="text-align:center" class="card-title m-b-2">
+		<span id="visitors-chart-heading">Area Wise Downloads </span>
+	</h4>
+	<div id="chartContainer2" style="height: 370px;"></div> -->
 	
 
 
